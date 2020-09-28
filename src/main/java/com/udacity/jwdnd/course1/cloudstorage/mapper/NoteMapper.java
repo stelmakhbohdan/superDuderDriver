@@ -1,6 +1,6 @@
-package mapper;
+package com.udacity.jwdnd.course1.cloudstorage.mapper;
 
-import model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 

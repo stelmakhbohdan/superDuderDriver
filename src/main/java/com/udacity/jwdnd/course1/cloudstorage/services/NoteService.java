@@ -1,7 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
-import mapper.NoteMapper;
-import model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,30 +11,32 @@ import java.util.List;
 @Service
 public class NoteService {
     private NoteMapper noteMapper;
-    private AuthenticatedUserService authenticatedUserService;
+    private UserMapper userMapper;
 
-    public NoteService(NoteMapper noteMapper, AuthenticatedUserService authenticatedUserService) {
+    public NoteService(NoteMapper noteMapper, UserMapper userMapper) {
         this.noteMapper = noteMapper;
-        this.authenticatedUserService = authenticatedUserService;
+        this.userMapper = userMapper;
     }
 
     public Note getNote(Integer noteId){
         return noteMapper.getNote(noteId);
     }
-    public List<Note> getNotes(){
-        return noteMapper.getNotes(authenticatedUserService.getLoggedInUserId());
+
+    public List<Note> getNotes(int userid){
+        return noteMapper.getNotes(userid);
     }
 
-    public void editNotes(Note notes){
-        Note note = noteMapper.getNote(notes.getNoteid());
-        note.setNotetittle(notes.getNotetittle());
-        note.setNotedescription(notes.getNotedescription());
-        noteMapper.editNote(note);
+    public void editNote(NoteForm noteModalForm, String username) {
+        Note selectedNote = new Note(Integer.parseInt(noteModalForm.getNoteid()),
+                noteModalForm.getNotetitle(), noteModalForm.getNotedescription(),
+                userMapper.getUserIdByUsername(username));
+        noteMapper.editNote(selectedNote);
     }
 
-    public int addNote(Note note){
-        return noteMapper.addNote(new Note(0,note.getNotetittle(),note.getNotedescription()
-        ,authenticatedUserService.getLoggedInUserId()));
+    public void addNote(NoteForm noteForm,String username){
+        Note newNote = new Note(null, noteForm.getNotetitle(),
+                noteForm.getNotedescription(), userMapper.getUserIdByUsername(username));
+        noteMapper.addNote(newNote);
     }
 
     public void deleteNote(Integer noteId){

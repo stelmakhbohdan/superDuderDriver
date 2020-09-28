@@ -1,4 +1,4 @@
-package controller;
+package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Controller;
@@ -10,4 +10,5 @@ public class ResultController {
     public String getResult(Authentication authentication){
         return "result";
     }
+
 }

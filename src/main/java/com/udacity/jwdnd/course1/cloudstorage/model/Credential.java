@@ -1,35 +1,29 @@
-package model;
+package com.udacity.jwdnd.course1.cloudstorage.model;
 
 public class Credential {
-    private Integer credentialid;
+
+    private Integer credentialId;
     private String url;
     private String username;
     private String key;
     private String password;
-    private Integer userid;
+    private Integer userId;
 
-    public Credential(Integer credentialid, String url, String username, String key, String password, Integer userid) {
-        this.credentialid = credentialid;
+    public Credential(Integer credentialId, String url, String username, String key, String password, Integer userId) {
+        this.credentialId = credentialId;
         this.url = url;
         this.username = username;
         this.key = key;
         this.password = password;
-        this.userid = userid;
+        this.userId = userId;
     }
 
-    public Credential(Integer credentialid, String url, String username, String password) {
-        this.credentialid = credentialid;
-        this.url = url;
-        this.username = username;
-        this.password = password;
+    public Integer getCredentialId() {
+        return credentialId;
     }
 
-    public Integer getCredentialid() {
-        return credentialid;
-    }
-
-    public void setCredentialid(Integer credentialid) {
-        this.credentialid = credentialid;
+    public void setCredentialId(Integer credentialId) {
+        this.credentialId = credentialId;
     }
 
     public String getUrl() {
@@ -64,11 +58,11 @@ public class Credential {
         this.password = password;
     }
 
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
