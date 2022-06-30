@@ -1,9 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.*;
 import com.udacity.jwdnd.course1.cloudstorage.services.*;
-import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
-import com.udacity.jwdnd.course1.cloudstorage.model.File;
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,35 +15,54 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private NoteService noteService;
-    private UserService userService;
+    @Autowired
     private FileService fileService;
+    @Autowired
+    private NoteServices noteServices;
+    @Autowired
     private CredentialService credentialService;
+    @Autowired
+    private AuthenticatedUserService authenticatedUserService;
+    @Autowired
     private EncryptionService encryptionService;
 
-    public HomeController(FileService fileService,NoteService noteService, UserService userService, CredentialService credentialService, EncryptionService encryptionService) {
-        this.noteService = noteService;
-        this.userService = userService;
-        this.fileService = fileService;
-        this.credentialService = credentialService;
-        this.encryptionService = encryptionService;
-    }
 
     @GetMapping("/home")
-    public String getHomePage(File file, Credential credentialModalForm, Note noteModalForm, Authentication authentication, Model model) throws Exception {
-        String username = authentication.getName();
-        int userid = userService.getUser(username).getUserid();
-        List<Note> notes = this.noteService.getNotes(userid);
-        List<Credential> credentials = this.credentialService.getAllUserCredentials(userid);
-        List<File> files = this.fileService.getAllUserFiles(userid);
+    public String getHomePage(@ModelAttribute("noteForm") NoteForm noteForm, @ModelAttribute("credentialForm") CredentialForm credentialForm, Authentication authentication, Model model) {
 
+        model.addAttribute("name", authenticatedUserService.getLoggedInName());
 
-        model.addAttribute("files", files);
-        model.addAttribute("notes", notes);
+        List<Files> filesList;
+        try {
+            filesList = fileService.loadFiles();
+        } catch (NullPointerException e) {
+            filesList = new ArrayList<>();
+        }
+//
+        List<Notes> notesList;
+
+        try {
+            notesList = noteServices.getNotes();
+        } catch (NullPointerException e) {
+            notesList = new ArrayList<>();
+        }
+
+        Credentials credentials;
+
+        try {
+            credentials = credentialService.getCredentialsEncoded();
+        } catch (NullPointerException e) {
+            credentials =  new Credentials();
+        }
+
+        model.addAttribute("files", filesList);
+        model.addAttribute("fileSize", filesList.size());
+        model.addAttribute("notes", notesList);
+        model.addAttribute("noteSize", notesList.size());
         model.addAttribute("credentials", credentials);
-        model.addAttribute("encryptionService", encryptionService);
+//        model.addAttribute("credentialSize", credentials.size());
+        model.addAttribute("encryptService", encryptionService);
 
         return "home";
     }
-
 }

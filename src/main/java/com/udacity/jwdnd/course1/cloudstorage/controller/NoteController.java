@@ -1,67 +1,42 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
-import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.model.Note;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.udacity.jwdnd.course1.cloudstorage.services.NoteServices;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller()
+@Controller
 @RequestMapping("/note")
 public class NoteController {
-    private NoteService noteService;
 
-    public NoteController(NoteService noteService) {
-        this.noteService = noteService;
+    private NoteServices noteServices;
+
+
+    public NoteController(NoteServices noteServices) {
+        this.noteServices = noteServices;
     }
 
-    private Logger logger = LoggerFactory.getLogger(NoteController.class);
+    @PostMapping("/add")
+    public String addNote(@ModelAttribute("noteForm") NoteForm noteForm, Authentication authentication, RedirectAttributes redirectAttributes){
 
-    @PostMapping
-    public String createOrUpdateNote(NoteForm noteModalForm, Authentication authentication, RedirectAttributes redirectAttributes) {
-        String username = authentication.getName();
-
-        if (!noteModalForm.getNoteid().equalsIgnoreCase("")) {
-            try {
-                this.noteService.editNote(noteModalForm, username);
-                redirectAttributes.addFlashAttribute("successMessage", "Your note was updated successfully.");
-                return "redirect:/result";
-            } catch (Exception e) {
-                logger.error("Cause: " + e.getCause() + ". Message: " + e.getMessage());
-                redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong with the note update. Please try again!");
-                return "redirect:/result";
-            }
-        } else {
-            try {
-                this.noteService.addNote(noteModalForm, username);
-                redirectAttributes.addFlashAttribute("successMessage", "Your note was successfully created.");
-                noteModalForm.setNotetitle("");
-                noteModalForm.setNotedescription("");
-                return "redirect:/result";
-            } catch (Exception e) {
-                logger.error("Cause: " + e.getCause() + ". Message: " + e.getMessage());
-                redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong with the note creation... Please try again.");
-                return "redirect:/result";
-            }
+        if(noteForm.getNoteId() == null){
+            noteServices.addNote(noteForm);
+        }else{
+            noteServices.editNote(noteForm);
+            redirectAttributes.addFlashAttribute("editNoteSuccess","Note edited.");
+            return "redirect:/result";
         }
+        return "redirect:/result";
+
 
     }
 
-    @GetMapping("/delete/{noteId}")
-    public String deleteNote(@PathVariable int noteId, RedirectAttributes redirectAttributes) {
-        try {
-            noteService.deleteNote(noteId);
-            redirectAttributes.addFlashAttribute("successMessage", "Your note was successfully deleted");
-            return "redirect:/result";
-        } catch (Exception e) {
-            logger.error("Cause: " + e.getCause() + ". Message: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong with the note deletion... Please try again.");
-            return "redirect:/result";
-        }
+    @GetMapping("/delete/{noteId:.+}")
+    public String deleteNote(@PathVariable Integer noteId, Authentication authentication, RedirectAttributes redirectAttributes){
+        noteServices.deleteNote(noteId);
+        redirectAttributes.addFlashAttribute("deleteNoteSuccess","Note deleted successfully.");
+        return "redirect:/result";
     }
 }

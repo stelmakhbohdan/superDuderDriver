@@ -11,29 +11,31 @@
 <body class="p-3 mb-2 bg-light text-black">
 <div class="container justify-content-center w-25 p-3" style="background-color: #eeeeee; margin-top: 5em;">
     <h1 class="display-5">Login</h1>
-    <form action="#" th:action="@{/login}" method="POST">
+
+    <form th:action="@{/login-user}" method="post">
         <div id="error-msg" th:if="${param.error}" class="alert alert-danger">
-            Invalid username or password!
+            Invalid userName or password
         </div>
         <div id="logout-msg" th:if="${param.logout}" class="alert alert-dark">
             You have been logged out
         </div>
-        <div th:if="${signupSuccess}" class="alert alert-success fill-parent">
-            You have successfully signed up! Please login.
+        <div id="signup-msg" th:if="${signupSuccess}" class="alert alert-dark">
+            You have succesfully signup! Now you can login.
         </div>
         <div class="form-group">
             <label for="inputUsername">Username</label>
-            <input type="input" class="form-control" name="username" id="inputUsername" placeholder="Enter Username" maxlength="20" required>
+            <input id="inputUsername" type="input" class="form-control" name="userName" placeholder="Enter Username" maxlength="20" required>
         </div>
         <div class="form-group">
             <label for="inputPassword">Password</label>
-            <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Enter Password" maxlength="20" required>
+            <input id="inputPassword" type="password" class="form-control" name="password" placeholder="Enter Password" maxlength="20" required>
         </div>
-        <button id="submit-button" type="submit" class="btn btn-primary">Login</button>
+        <!--<button id="submit-button" type="submit" class="btn btn-primary">Login</button>-->
+        <input id="submit-button" type="submit" class="btn btn-primary" value="Login">
     </form>
 
     <div class="form-group" style="margin-top: 0.5em;">
-        <label><a id="signup-link" th:href="@{/signup}">Click here to sign up</a></label>
+        <label><a th:href="@{/signup}">Click here to sign up</a></label>
     </div>
 </div>
 </body>

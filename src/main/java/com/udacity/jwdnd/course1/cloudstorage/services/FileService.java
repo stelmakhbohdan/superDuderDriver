@@ -1,8 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage.services;
 
-import com.udacity.jwdnd.course1.cloudstorage.mapper.FileMapper;
-import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
-import com.udacity.jwdnd.course1.cloudstorage.model.File;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.FilesMapper;
+import com.udacity.jwdnd.course1.cloudstorage.mapper.UsersMapper;
+import com.udacity.jwdnd.course1.cloudstorage.model.Files;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,35 +12,56 @@ import java.util.List;
 
 @Service
 public class FileService {
-    private FileMapper fileMapper;
-    private UserMapper userMapper;
+    private FilesMapper filesMapper;
+    private UsersMapper usersMapper;
+    private AuthenticatedUserService authenticatedUser;
 
-    public FileService(FileMapper fileMapper, UserMapper userMapper) {
-        this.fileMapper = fileMapper;
-        this.userMapper = userMapper;
+    public FileService(FilesMapper filesMapper, UsersMapper usersMapper, AuthenticatedUserService authenticatedUser) {
+        this.filesMapper = filesMapper;
+        this.usersMapper = usersMapper;
+        this.authenticatedUser = authenticatedUser;
     }
 
-    public List<File> getAllUserFiles(int userId) {
-        return fileMapper.getFiles(userId);
+    public boolean isFileNameAvailable(String fileName){ return filesMapper.getFile(authenticatedUser.getLoggedInUserId(), fileName) == null; }
+
+    public int uploadNewFile(MultipartFile file){
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        try {
+            return filesMapper.addFile(new Files(fileName,
+                    file.getContentType(),
+                    Long.toString(file.getSize()),
+                    authenticatedUser.getLoggedInUserId(),
+                    file.getBytes()
+            ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
-    public void createFile(MultipartFile fileUpload, String username) throws IOException {
-        int userId = userMapper.getUserIdByUsername(username);
-        File newFile = new File(null,
-                fileUpload.getOriginalFilename(),
-                fileUpload.getContentType(),
-                String.valueOf(fileUpload.getSize()),
-                userId,
-                fileUpload.getBytes()
-        );
-        fileMapper.addFile(newFile);
+    public Files loadFile(String fileName){
+        Files file = null;
+        try{
+            file = filesMapper.getFile(authenticatedUser.getLoggedInUserId(), fileName);
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            throw e;
+        }
+        return file;
     }
 
-    public File getFileByFileid(int fileId) {
-        return fileMapper.getFile(fileId);
+    public List<Files> loadFiles(){
+        List<Files> files = null;
+        try{
+            files = filesMapper.getFiles(authenticatedUser.getLoggedInUserId());
+        }catch (NullPointerException e){
+            e.printStackTrace();
+            throw e;
+        }
+        return files;
     }
 
-    public void deleteFileByFilename(int fileId) {
-        fileMapper.deleteFiles(fileId);
+    public void deleteFile(String fileName){
+        filesMapper.deleteFile(fileName);
     }
 }

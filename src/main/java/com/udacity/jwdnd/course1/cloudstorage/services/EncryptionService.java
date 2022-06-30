@@ -48,11 +48,4 @@ public class EncryptionService {
 
         return new String(decryptedValue);
     }
-
-    public String generateKey() {
-        SecureRandom random = new SecureRandom();
-        byte[] key = new byte[64];
-        random.nextBytes(key);
-        return Base64.getEncoder().encodeToString(key);
-    }
 }
