@@ -1,10 +1,9 @@
-package com.udacity.jwdnd.course1.cloudstorage.controller;
+package com.example.demo.controller;
 
-
-import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
-import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
-import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
-import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import com.example.demo.model.Credential;
+import com.example.demo.service.CredentialService;
+import com.example.demo.service.EncryptionService;
+import com.example.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

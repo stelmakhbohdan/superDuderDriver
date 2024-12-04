@@ -1,15 +1,15 @@
-package com.udacity.jwdnd.course1.cloudstorage.controller;
+package com.example.demo.controller;
 
-
-import com.udacity.jwdnd.course1.cloudstorage.model.Notes;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
-import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
-import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import com.example.demo.model.Notes;
+import com.example.demo.model.User;
+import com.example.demo.service.NoteService;
+import com.example.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
